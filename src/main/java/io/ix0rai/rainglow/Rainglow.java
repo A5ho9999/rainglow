@@ -143,7 +143,7 @@ public class Rainglow implements ModInitializer {
         String colour = tracker.get(getTrackedColourData(entityType));
         if (colourUnloaded(colour)) {
             // Use last generated colour if not null else generate a new colour
-            tracker.method_12778(getTrackedColourData(entityType), generateRandomColourId(random));
+            tracker.set(getTrackedColourData(entityType), generateRandomColourId(random));
             colour = tracker.get(getTrackedColourData(entityType));
         }
 

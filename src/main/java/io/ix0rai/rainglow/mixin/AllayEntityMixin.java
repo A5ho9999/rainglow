@@ -54,7 +54,7 @@ public abstract class AllayEntityMixin extends Entity implements AllayVariantPro
 
     @Override
     public void setVariant(EntityColour colour) {
-        this.getDataTracker().method_12778(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour.getId());
+        this.getDataTracker().set(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour.getId());
     }
 
     @Mixin(MobEntity.class)

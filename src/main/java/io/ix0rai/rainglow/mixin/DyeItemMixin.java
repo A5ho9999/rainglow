@@ -35,7 +35,7 @@ public class DyeItemMixin {
             if (!user.world.isClient) stack.decrement(1);
 
             DataTracker tracker = glowSquidEntity.getDataTracker();
-            tracker.method_12778(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), colour);
+            tracker.set(Rainglow.getTrackedColourData(EntityVariantType.GlowSquid), colour);
 
             cir.setReturnValue(ActionResult.success(user.world.isClient));
         } else if (entity instanceof AllayEntity && (allayEntity = (AllayEntity) entity).isAlive() & !Rainglow.getColour(EntityVariantType.Allay, allayEntity.getDataTracker(), allayEntity.getRandom()).equals(colour)) {
@@ -43,7 +43,7 @@ public class DyeItemMixin {
             if (!user.world.isClient) stack.decrement(1);
 
             DataTracker tracker = allayEntity.getDataTracker();
-            tracker.method_12778(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour);
+            tracker.set(Rainglow.getTrackedColourData(EntityVariantType.Allay), colour);
 
             cir.setReturnValue(ActionResult.success(user.world.isClient));
         }
