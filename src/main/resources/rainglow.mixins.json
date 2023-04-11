@@ -9,12 +9,15 @@
     "DyeItemMixin",
     "GlowSquidEntityMixin",
     "GlowSquidEntityMixin$MobEntityMixin",
-    "GlowSquidEntityMixin$SquidEntityMixin"
+    "GlowSquidEntityMixin$SquidEntityMixin",
+    "SlimeEntityMixin",
+    "SlimeEntityMixin$MobEntityMixin"
   ],
   "client": [
     "client.AllayEntityRendererMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
+    "client.SlimeEntityRendererMixin",
     "client.SquidInkParticleMixin"
   ],
   "injectors": {

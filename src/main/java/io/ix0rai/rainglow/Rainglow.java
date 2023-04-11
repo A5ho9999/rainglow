@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.resource.ResourceType;
@@ -29,8 +30,10 @@ public class Rainglow implements ModInitializer {
     private static final List<EntityColour> COLOURS = new ArrayList<>();
     private static final Map<String, Identifier> GLOWSQUID_TEXTURES = new HashMap<>();
     private static final Map<String, Identifier> ALLAY_TEXTURES = new HashMap<>();
+    private static final Map<String, Identifier> SLIME_TEXTURES = new HashMap<>();
     private static TrackedData<String> glowsquid_colour;
     private static TrackedData<String> allay_colour;
+    private static TrackedData<String> slime_colour;
 
     public static final String CUSTOM_NBT_KEY = "Colour";
 
@@ -56,8 +59,10 @@ public class Rainglow implements ModInitializer {
     public static void setMode(RainglowMode mode) {
         GLOWSQUID_TEXTURES.clear();
         ALLAY_TEXTURES.clear();
+        SLIME_TEXTURES.clear();
         COLOURS.clear();
 
+        //TODO: Config for Slime? Add Lime as default
         List<EntityColour> colours = mode.getColours();
         if (colours.isEmpty()) {
             LOGGER.info("No colours were present in the internal collection, adding blue so that the game doesn't crash");
@@ -78,6 +83,7 @@ public class Rainglow implements ModInitializer {
 
         GLOWSQUID_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.GlowSquid));
         ALLAY_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.Allay));
+        SLIME_TEXTURES.put(colour.getId(), colour.getTexture(EntityVariantType.Slime));
 
         if (COLOURS.size() >= 100) {
             throw new RuntimeException("Too many colours registered! Only up to 99 are allowed");
@@ -86,7 +92,8 @@ public class Rainglow implements ModInitializer {
 
     public static Identifier getTexture(EntityVariantType entityType, String colour) {
         if (entityType == EntityVariantType.GlowSquid) return GLOWSQUID_TEXTURES.get(colour);
-        else return ALLAY_TEXTURES.get(colour);
+        else if(entityType == EntityVariantType.Allay) return ALLAY_TEXTURES.get(colour);
+        else return SLIME_TEXTURES.get(colour);
     }
 
     public static int getColourIndex(String colour) {
@@ -103,19 +110,22 @@ public class Rainglow implements ModInitializer {
     }
 
     public static String generateRandomColourId(RandomGenerator random) { return COLOURS.get(random.nextInt(COLOURS.size())).getId(); }
-    public static Identifier getDefaultTexture(EntityVariantType entityType) { return EntityColour.BLUE.getTexture(entityType); }
-    public static boolean colourUnloaded(String colour) { return !COLOURS.contains(EntityColour.get(colour)); }
+        public static Identifier getDefaultTexture(EntityVariantType entityType) {
+            if (entityType == EntityVariantType.Slime) {
+                return EntityColour.LIME.getTexture(entityType);
+            } else return EntityColour.BLUE.getTexture(entityType); }
+        public static boolean colourUnloaded(String colour) { return !COLOURS.contains(EntityColour.get(colour)); }
 
-    public static String translatableTextKey(String key) {
-        if (key.split("\\.").length != 2) throw new IllegalArgumentException("key must be in format \"category.key\"");
-        return MOD_ID + "." + key;
-    }
+        public static String translatableTextKey(String key) {
+            if (key.split("\\.").length != 2) throw new IllegalArgumentException("key must be in format \"category.key\"");
+            return MOD_ID + "." + key;
+        }
 
-    public static Text translatableText(String key, Object... args) {
-        return Text.translatable(translatableTextKey(key), args);
-    }
+        public static Text translatableText(String key, Object... args) {
+            return Text.translatable(translatableTextKey(key), args);
+        }
 
-    public static Text translatableText(String key) {
+        public static Text translatableText(String key) {
         return Text.translatable(translatableTextKey(key));
     }
 
@@ -133,6 +143,10 @@ public class Rainglow implements ModInitializer {
             if (allay_colour == null) {
                 return allay_colour = DataTracker.registerData(AllayEntity.class, TrackedDataHandlerRegistry.STRING);
             } else return allay_colour;
+        } else if (entityType == EntityVariantType.Slime) {
+            if (slime_colour == null) {
+                return slime_colour = DataTracker.registerData(SlimeEntity.class, TrackedDataHandlerRegistry.STRING);
+            } else return slime_colour;
         }
 
         return null;

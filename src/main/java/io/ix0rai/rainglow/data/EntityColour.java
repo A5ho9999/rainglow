@@ -46,9 +46,13 @@ public enum EntityColour
         if (entityType == EntityVariantType.GlowSquid) {
             String textureName = this.getId().equals("blue") ? "glow_squid" : this.getId();
             this.texture = new Identifier("textures/entity/squid/" + textureName + ".png");
-        } else {
+        } else if (entityType == EntityVariantType.Allay) {
             String textureName = this.getId().equals("blue") ? "allay" : this.getId();
             this.texture = new Identifier("textures/entity/allay/" + textureName + ".png");
+        } else if (entityType == EntityVariantType.Slime) {
+            //TODO: Need to do something about this since Lime isn't loaded by default of course
+            String textureName = this.getId().equals("lime") ? "slime" : this.getId();
+            this.texture = new Identifier("textures/entity/slime/" + textureName + ".png");
         }
         return this.texture;
     }

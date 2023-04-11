@@ -1,11 +1,13 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
-import io.ix0rai.rainglow.data.*;
+import io.ix0rai.rainglow.data.AllayEntityData;
+import io.ix0rai.rainglow.data.AllayVariantProvider;
+import io.ix0rai.rainglow.data.EntityColour;
+import io.ix0rai.rainglow.data.EntityVariantType;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AllayEntity;
-import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.LocalDifficulty;
@@ -20,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AllayEntity.class)
 public abstract class AllayEntityMixin extends Entity implements AllayVariantProvider
 {
-    protected AllayEntityMixin(EntityType<? extends GlowSquidEntity> entityType, World world) {
+    protected AllayEntityMixin(EntityType<? extends AllayEntity> entityType, World world) {
         super(entityType, world);
         throw new UnsupportedOperationException();
     }
