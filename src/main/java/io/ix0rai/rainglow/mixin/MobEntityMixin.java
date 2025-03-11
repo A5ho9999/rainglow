@@ -3,11 +3,7 @@ package io.ix0rai.rainglow.mixin;
 import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.VariantProvider;
+import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -30,17 +26,14 @@ public abstract class MobEntityMixin extends LivingEntity {
     public void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
         RainglowEntity entity = RainglowEntity.get(this);
         if (entity != null) {
-            RainglowColour colour = generateColour(entity);
-            ((VariantProvider<RainglowColour>) this).setVariant(colour);
+            RainglowColour colour = generateColour();
+            ((VariantHolder<RainglowColour>) this).setVariant(colour);
             cir.setReturnValue(entity.createEntityData(colour));
         }
     }
 
     @Unique
-    private RainglowColour generateColour(RainglowEntity entity) {
-        int i = random.nextInt(100);
-        int rarity = Rainglow.CONFIG.getRarity(entity);
-
-        return i >= rarity ? entity.getDefaultColour() : RainglowColour.get(Rainglow.generateRandomColourId(this.getWorld(), this.random));
+    private RainglowColour generateColour() {
+        return Rainglow.generateRandomColour(this.getWorld(), this.random);
     }
 }

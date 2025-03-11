@@ -1,18 +1,18 @@
 package io.ix0rai.rainglow.mixin.client;
 
-import io.ix0rai.rainglow.Rainglow;
 import io.ix0rai.rainglow.data.RainglowColour;
-import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.client.particle.GlowParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.SimpleParticleType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Random;
 
 @Mixin(GlowParticle.GlowFactory.class)
 public class GlowParticleMixin {
@@ -25,14 +25,16 @@ public class GlowParticleMixin {
      * @reason recolor particles
      */
     @Inject(method = "createParticle*", at = @At("HEAD"), cancellable = true)
-    public void createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, CallbackInfoReturnable<GlowParticle> cir) {
+    public void createParticle(SimpleParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, CallbackInfoReturnable<GlowParticle> cir) {
         // we use whether g is over 100 to determine if we should override the method
-        if (Rainglow.CONFIG.isEntityEnabled(RainglowEntity.GLOW_SQUID) && g > 99) {
+        if (g > 99) {
             g -= 100;
-            GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - GlowParticle.RANDOM.nextDouble(), h, 0.5 - GlowParticle.RANDOM.nextDouble(), this.spriteProvider);
+            Random random = new Random();
+
+            GlowParticle glowParticle = new GlowParticle(clientWorld, d, e, f, 0.5 - random.nextDouble(), h, 0.5 - random.nextDouble(), this.spriteProvider);
 
             // we check the g value to see what the colour is
-            RainglowColour.RGB rgb = RainglowColour.getPassiveParticleRGB((int) g, GlowParticle.RANDOM);
+            RainglowColour.RGB rgb = RainglowColour.getPassiveParticleRGB((int) g, random);
             glowParticle.setColor(rgb.r(), rgb.g(), rgb.b());
 
             // set velocities - I don't entirely understand why this is necessary, it's copied from vanilla code

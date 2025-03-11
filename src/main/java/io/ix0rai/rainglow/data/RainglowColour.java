@@ -4,12 +4,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.random.RandomGenerator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public enum RainglowColour {
     BLACK("black", new RGB(0.0F, 0.0F, 0.0F), new RGB(0.0F, 0.0F, 0.0F), new RGB(0, 0, 0), Items.BLACK_DYE),
@@ -58,15 +58,15 @@ public enum RainglowColour {
                 switch (entity) {
                     case GLOW_SQUID -> {
                         String textureName = RainglowEntity.GLOW_SQUID.getDefaultColour() == this ? "glow_squid" : this.getId();
-                        this.textures.put(entity, Identifier.ofDefault("textures/entity/squid/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofVanilla("textures/entity/squid/" + textureName + ".png"));
                     }
                     case ALLAY -> {
                         String textureName = RainglowEntity.ALLAY.getDefaultColour() == this ? "allay" : this.getId();
-                        this.textures.put(entity, Identifier.ofDefault("textures/entity/allay/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofVanilla("textures/entity/allay/" + textureName + ".png"));
                     }
                     case SLIME -> {
                         String textureName = RainglowEntity.SLIME.getDefaultColour() == this ? "slime" : this.getId();
-                        this.textures.put(entity, Identifier.ofDefault("textures/entity/slime/" + textureName + ".png"));
+                        this.textures.put(entity, Identifier.ofVanilla("textures/entity/slime/" + textureName + ".png"));
                     }
                 }
             }
@@ -109,7 +109,7 @@ public enum RainglowColour {
         return RainglowColour.values()[index].getInkRgb();
     }
 
-    public static RainglowColour.RGB getPassiveParticleRGB(int index, RandomGenerator random) {
+    public static RainglowColour.RGB getPassiveParticleRGB(int index, Random random) {
         RainglowColour colour = RainglowColour.values()[index];
         return random.nextBoolean() ? colour.getPassiveParticleRgb() : colour.getAltPassiveParticleRgb();
     }

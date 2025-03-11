@@ -8,19 +8,18 @@
     "DyeItemMixin",
     "GlowSquidEntityMixin",
     "GlowSquidEntityMixin$SquidEntityMixin",
-    "MinecraftServerAccessor",
     "MobEntityMixin",
     "SlimeEntityMixin"
   ],
   "client": [
     "client.AllayEntityRendererMixin",
+    "client.EntityRendererMixin",
+    "client.EntityRenderStateMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
     "client.SlimeEntityRendererMixin",
-    "client.SlimeParticleMixin",
-    "client.SquidInkParticleMixin",
-    "client.screen.CyclingValueSetMixin",
-    "client.screen.SliderValueImplMixin"
+    "client.SlimeOverlayFeatureRendererMixin",
+    "client.SquidInkParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

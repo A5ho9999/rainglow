@@ -1,9 +1,9 @@
 package io.ix0rai.rainglow.mixin;
 
 import io.ix0rai.rainglow.Rainglow;
+import io.ix0rai.rainglow.data.RainglowColour;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
@@ -23,23 +23,17 @@ import static net.minecraft.item.Items.*;
 public class DyeItemMixin {
     @Inject(method = "useOnEntity", at = @At("TAIL"), cancellable = true)
     private void useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        if (Rainglow.CONFIG.allowDyeing.value()) {
-            String colour = getDye(stack);
-            RainglowEntity entityType = RainglowEntity.get(entity);
+        RainglowColour colour = RainglowColour.get(getDye(stack));
+        RainglowEntity entityType = RainglowEntity.get(entity);
 
-            if (entityType != null && !Rainglow.colourUnloaded(user.getWorld(), entityType, colour)
-                    && Rainglow.CONFIG.isEntityEnabled(entityType)
-                    && !Rainglow.getColour(user.getWorld(), entityType, entity.getDataTracker(), entity.getWorld().getRandom()).getId().equals(colour)) {
-                entity.getWorld().playSoundFromEntity(user, entity, SoundEvents.BLOCK_AMETHYST_CLUSTER_BREAK, SoundCategory.PLAYERS, 5.0f, 1.0f);
-                if (!user.getWorld().isClient()) {
-                    stack.decrement(1);
-                }
-
-                DataTracker tracker = entity.getDataTracker();
-                tracker.set(entityType.getTrackedData(), colour);
-
-                cir.setReturnValue(ActionResult.success(user.getWorld().isClient()));
+        if (entityType != null && Rainglow.getColour(entity.getUuid()) != colour) {
+            entity.getWorld().playSoundFromEntity(user, entity, SoundEvents.BLOCK_AMETHYST_CLUSTER_BREAK, SoundCategory.PLAYERS, 5.0f, 1.0f);
+            if (!user.getWorld().isClient()) {
+                stack.decrement(1);
             }
+
+            Rainglow.setColour(entity, colour);
+            cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 

@@ -1,6 +1,6 @@
 package io.ix0rai.rainglow.data;
 
-import net.minecraft.entity.VariantProvider;
+import net.minecraft.entity.VariantHolder;
 
-public interface AllayVariantProvider extends VariantProvider<RainglowColour> {
+public interface AllayVariantProvider extends VariantHolder<RainglowColour> {
 }

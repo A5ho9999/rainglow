@@ -1,10 +1,8 @@
 package io.ix0rai.rainglow.data;
 
 import io.ix0rai.rainglow.Rainglow;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.text.TextColor;
 
 import java.util.ArrayList;
@@ -60,7 +58,6 @@ public class RainglowMode {
         // custom colours are handled by the config instead of the enum
         // all colours mode is handled through code so that I don't have to update if new colours are added
         return switch (this.getId()) {
-            case "custom" -> Rainglow.CONFIG.getCustom();
             case "all_colours" -> List.of(RainglowColour.values());
             default -> this.colours;
         };
@@ -117,22 +114,6 @@ public class RainglowMode {
         formatted.append("\b\b");
         Rainglow.LOGGER.info("Loaded modes: [" + formatted + "]");
     }
-
-    public static void write(PacketByteBuf buf, RainglowMode mode) {
-        buf.writeString(mode.getId());
-        TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.encode(buf, mode.getText());
-        List<String> colourIds = mode.getColours().stream().map(RainglowColour::getId).toList();
-        buf.writeCollection(colourIds, PacketByteBuf::writeString);
-    }
-
-    public static RainglowMode read(PacketByteBuf buf) {
-        String id = buf.readString();
-        Text text = TextCodecs.UNLIMITED_TEXT_PACKET_CODEC.decode(buf);
-        List<String> colourIds = buf.readList(PacketByteBuf::readString);
-
-        return new RainglowMode(id, colourIds, text, RainglowMode.get(id) != null);
-    }
-
 
     /**
      * represents modes loaded from json files
