@@ -20,9 +20,7 @@ import java.util.UUID;
 
 @Mixin(SlimeOverlayFeatureRenderer.class)
 public class SlimeOverlayFeatureRendererMixin {
-    /**
-     * Override the outline texture for slimes
-     */
+
     @Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/SlimeEntityRenderState;FF)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getOutline(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
     private RenderLayer rainglow$getOutline(Identifier defaultTexture, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeEntityRenderState state, float f, float g) {
@@ -30,9 +28,6 @@ public class SlimeOverlayFeatureRendererMixin {
         return overrideTexture != null ? RenderLayer.getOutline(overrideTexture) : RenderLayer.getOutline(SlimeEntityRenderer.TEXTURE);
     }
 
-    /**
-     * Override the translucent texture for slimes
-     */
     @Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/SlimeEntityRenderState;FF)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityTranslucent(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
     private RenderLayer rainglow$getEntityTranslucent(Identifier defaultTexture, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeEntityRenderState state, float f, float g) {
@@ -40,9 +35,6 @@ public class SlimeOverlayFeatureRendererMixin {
         return overrideTexture != null ? RenderLayer.getEntityTranslucent(overrideTexture) : RenderLayer.getEntityTranslucent(SlimeEntityRenderer.TEXTURE);
     }
 
-    /**
-     * Helper method to get the override texture for a slime entity
-     */
     @Unique
     private Identifier getOverrideTexture(SlimeEntityRenderState state) {
         if (state instanceof EntityRenderStateTracker) {
@@ -51,11 +43,10 @@ public class SlimeOverlayFeatureRendererMixin {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
 
-                    // Check if we have a SLIME entity type in RainglowEntity
                     try {
                         return RainglowEntity.SLIME.overrideTextureNoCallback(entityUuid);
                     } catch (Exception e) {
-                        // If SLIME is not defined or any other error, ignore
+                        //ignore, just here to prevent possible crashes
                     }
                 }
             }
