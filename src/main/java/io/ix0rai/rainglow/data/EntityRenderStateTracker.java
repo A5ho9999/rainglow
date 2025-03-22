@@ -19,4 +19,8 @@ public interface EntityRenderStateTracker {
      * @return The UUID of the associated entity, or null if not set
      */
     UUID rainglow$getEntityUuid();
+
+    void rainglow$setRainbow(boolean isRainbow);
+
+    boolean rainglow$isRainbow();
 }

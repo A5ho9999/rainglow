@@ -15,6 +15,16 @@ public class EntityRendererMixin <T extends Entity, S extends EntityRenderState>
     private void rainglow$updateRenderState(T entity, S state, float tickDelta, CallbackInfo ci) {
         if (state instanceof EntityRenderStateTracker) {
             ((EntityRenderStateTracker) state).rainglow$setEntity(entity);
+
+            // TODO: This is a placeholder, add new variant or something. Don't recommend using names
+            if (entity.hasCustomName()) {
+                if (entity.getCustomName().getString().contains("gay")) {
+                    ((EntityRenderStateTracker) state).rainglow$setRainbow(true);
+                }
+            } else {
+                // Reset it just in case the name changed or whatever
+                ((EntityRenderStateTracker) state).rainglow$setRainbow(false);
+            }
         }
     }
 }

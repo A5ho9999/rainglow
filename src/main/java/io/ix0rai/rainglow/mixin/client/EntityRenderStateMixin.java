@@ -11,6 +11,7 @@ import java.util.UUID;
 @Mixin(EntityRenderState.class)
 public class EntityRenderStateMixin implements EntityRenderStateTracker {
     @Unique private UUID entityUuid;
+    @Unique private boolean isRainbow;
 
     @Override
     public void rainglow$setEntity(Entity entity) {
@@ -22,5 +23,15 @@ public class EntityRenderStateMixin implements EntityRenderStateTracker {
     @Override
     public UUID rainglow$getEntityUuid() {
         return this.entityUuid;
+    }
+
+    @Override
+    public void rainglow$setRainbow(boolean isRainbow) {
+        this.isRainbow = isRainbow;
+    }
+
+    @Override
+    public boolean rainglow$isRainbow() {
+        return this.isRainbow;
     }
 }

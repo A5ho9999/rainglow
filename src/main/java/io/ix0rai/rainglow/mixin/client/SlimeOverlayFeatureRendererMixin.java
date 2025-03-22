@@ -1,15 +1,20 @@
 package io.ix0rai.rainglow.mixin.client;
 
+import io.ix0rai.rainglow.data.ColorOverlayVertexConsumer;
 import io.ix0rai.rainglow.data.EntityRenderStateTracker;
+import io.ix0rai.rainglow.data.RainbowManager;
 import io.ix0rai.rainglow.data.RainglowEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.SlimeEntityRenderer;
 import net.minecraft.client.render.entity.feature.SlimeOverlayFeatureRenderer;
+import net.minecraft.client.render.entity.model.SlimeEntityModel;
 import net.minecraft.client.render.entity.state.SlimeEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,6 +38,34 @@ public class SlimeOverlayFeatureRendererMixin {
     private RenderLayer rainglow$getEntityTranslucent(Identifier defaultTexture, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeEntityRenderState state, float f, float g) {
         Identifier overrideTexture = getOverrideTexture(state);
         return overrideTexture != null ? RenderLayer.getEntityTranslucent(overrideTexture) : RenderLayer.getEntityTranslucent(SlimeEntityRenderer.TEXTURE);
+    }
+
+    @Redirect(method = "render*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/SlimeEntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;II)V"))
+    private void rainglow$renderWithColor(SlimeEntityModel model, MatrixStack matrices, VertexConsumer vertices, int light, int overlay, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, SlimeEntityRenderState state, float f, float g) {
+        if (state instanceof EntityRenderStateTracker) {
+            UUID entityUuid = ((EntityRenderStateTracker) state).rainglow$getEntityUuid();
+            if (entityUuid != null && ((EntityRenderStateTracker) state).rainglow$isRainbow()) {
+                ClientWorld world = MinecraftClient.getInstance().world;
+                if (world != null) {
+                    LivingEntity entity = RainbowManager.findEntityByUuid(world, entityUuid);
+                    if (RainglowEntity.get(entity) != null) {
+                        int rainbowColor = RainbowManager.getRainbowColor(entityUuid);
+
+                        float r = ((rainbowColor >> 16) & 0xFF) / 255.0F;
+                        float g1 = ((rainbowColor >> 8) & 0xFF) / 255.0F;
+                        float b = (rainbowColor & 0xFF) / 255.0F;
+
+                        VertexConsumer coloredVertices = new ColorOverlayVertexConsumer(vertices, r, g1, b);
+
+                        model.render(matrices, coloredVertices, light, overlay);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Default render if no rainbow effect is needed
+        model.render(matrices, vertices, light, overlay);
     }
 
     @Unique

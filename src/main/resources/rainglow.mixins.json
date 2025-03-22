@@ -17,6 +17,7 @@
     "client.EntityRenderStateMixin",
     "client.GlowParticleMixin",
     "client.GlowSquidEntityRendererMixin",
+    "client.LivingEntityRendererMixin",
     "client.SlimeEntityRendererMixin",
     "client.SlimeOverlayFeatureRendererMixin",
     "client.SquidInkParticleMixin"

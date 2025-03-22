@@ -23,7 +23,8 @@ public abstract class GlowSquidEntityRendererMixin {
             if (entityUuid != null) {
                 ClientWorld world = MinecraftClient.getInstance().world;
                 if (world != null) {
-                    RainglowEntity.GLOW_SQUID.overrideTexture(entityUuid, cir);
+                    boolean rainbowState = ((EntityRenderStateTracker) state).rainglow$isRainbow();
+                    RainglowEntity.GLOW_SQUID.overrideTexture(entityUuid, rainbowState, cir);
                 }
             }
         }

@@ -92,7 +92,13 @@ public enum RainglowEntity {
         return null;
     }
 
-    public void overrideTexture(UUID entity, CallbackInfoReturnable<Identifier> cir) {
+    public void overrideTexture(UUID entity, boolean rainbowState, CallbackInfoReturnable<Identifier> cir) {
+        if (rainbowState) {
+            Identifier texture = RainglowColour.WHITE.getTexture(this);
+            cir.setReturnValue(texture != null ? texture : this.getDefaultTexture());
+            return;
+        }
+
         RainglowColour colour = Rainglow.getColour(entity);
 
         // if the colour is default we don't need to override the method

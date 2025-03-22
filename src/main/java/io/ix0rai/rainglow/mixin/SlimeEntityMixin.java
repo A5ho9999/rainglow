@@ -11,22 +11,16 @@ import net.minecraft.entity.conversion.EntityConversionContext;
 import net.minecraft.entity.conversion.EntityConversionType;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SlimeEntity.class)
 public abstract class SlimeEntityMixin extends Entity implements SlimeVariantProvider {
-    @Shadow
-    protected abstract ParticleEffect getParticles();
-
     @Shadow public abstract void remove(RemovalReason reason);
 
     protected SlimeEntityMixin(EntityType<? extends SlimeEntity> entityType, World world) {
@@ -85,33 +79,6 @@ public abstract class SlimeEntityMixin extends Entity implements SlimeVariantPro
             // Don't forget this, boy was that a mistake
             super.remove(reason);
             ci.cancel();
-        }
-    }
-
-    /**
-     * @author ix0rai
-     * @reason change particles based on colour
-     */
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"),
-            slice = @Slice(
-                    from = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/SlimeEntity;getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;"),
-                    to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/SlimeEntity;playSound(Lnet/minecraft/sound/SoundEvent;FF)V")
-            )
-    )
-    public void tick(CallbackInfo ci) {
-
-        // TODO : No more magic, big sadge. Needs fix somehow
-        float size = this.getDimensions(this.getPose()).width();
-        RainglowColour colour = Rainglow.getColour(this.getUuid());
-        int index = colour.ordinal();
-
-        for (int j = 0; j < size / 2; j ++) {
-            float f = this.random.nextFloat() * 6.2831855F;
-            float g = this.random.nextFloat() * 0.5F + 0.5F;
-            float h = MathHelper.sin(f) * size * g;
-            float k = MathHelper.cos(f) * size * g;
-            // note: y velocity of 100 is a magic value
-            this.getWorld().addParticle(this.getParticles(), this.getX() + (double) h, this.getY(), this.getZ() + (double) k, index, 100.0, 0.0);
         }
     }
 
