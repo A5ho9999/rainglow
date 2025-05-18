@@ -64,7 +64,8 @@ public enum RainglowEntity {
     }
 
     public RainglowColour readNbt(World world, NbtCompound nbt, RandomGenerator random) {
-        RainglowColour colour = RainglowColour.get(nbt.getString(Rainglow.CUSTOM_NBT_KEY));
+        // TODO: correctly handle optional
+        RainglowColour colour = RainglowColour.get(nbt.getString(Rainglow.CUSTOM_NBT_KEY).get());
 
         if (Rainglow.colourUnloaded(world, this, colour)) {
             colour = Rainglow.generateRandomColour(world, random);
